@@ -6,7 +6,7 @@ To separately download the ASL Dataset, you can click [here](https://www.kaggle.
 
 Alternatively, you can use the provided `dataset_downloader.py` script to automatically download the dataset for you. Simply run the script with the appropriate arguments, and it will handle the download and extraction process for you.
 
-### Uploading Python Scripts and Kaggle API Key to Colab
+## Uploading Python Scripts and Kaggle API Key to Colab
 To begin, navigate to your Colab environment and ensure you have all the necessary Python scripts from the `neuralnet` directory and the `script` directory. Additionally, make sure you have your Kaggle API JSON file ready for uploading.
 
 1. **Accessing Colab Environment**: Open your Colab notebook and ensure you are connected to the runtime.
@@ -17,14 +17,14 @@ To begin, navigate to your Colab environment and ensure you have all the necessa
 
 Once all files are uploaded, you can proceed to execute your Python scripts within the Colab environment, utilizing the uploaded scripts and the Kaggle API token for accessing datasets. 
 
-### Train Model
+## Train Model
 All the required **python commands** to run the scripts are in notebook `ASL_Alphabet_Classification.ipynb`.
 
 ### Note
 - It may take around 1 hour to train.
 - After training is completed, download model file named `efficientnet_model.pth` under `models` directory.
 
-### Training the Model Locally
+## Training the Model Locally
 
 If you wish to train the model on your local device, please ensure that 
 - You have at least **8GB** of **VRAM** on a CUDA-supported GPU device. 
