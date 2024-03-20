@@ -29,9 +29,8 @@ All the required **python commands** to run the scripts are in notebook `ASL_Alp
 If you wish to train the model on your local device, please ensure that 
 - You have at least **8GB** of **VRAM** on a CUDA-supported GPU device. 
 - Kaggle API token (`kaggle.json`) is moved to the directory `"C:/Users/{your_username}/.kaggle/"` on Windows, or `"~/.kaggle/"` on Linux or macOS. 
-- Make sure to provide the absolute path of the new `kaggle.json` location when running the script with the `--json_path` argument for `dataset_downloader.py`.
-
-Before starting the training process, ensure that you have installed all the necessary dependencies specified in the `requirements.txt` file. You can install them using the following command:
+- To provide the absolute path of the new `kaggle.json` location when running the script with the `--json_path` argument for `dataset_downloader.py
+- `Pytorch Cuda` version is installed with appropriate version of `Nvidia CUDA Toolkit`.
 
 ## Demo Usage
 
