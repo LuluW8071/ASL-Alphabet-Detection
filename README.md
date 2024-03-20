@@ -48,9 +48,7 @@ To run the demo:
     streamlit run main.py
     ```
 
-This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `models/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.
-
-<i>The pre-trained models are available in the `models/` directory. Simply load `models/efficientnet_model.pth` on Colab or a local device.</i>
+<i>This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `model/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.</i>
 
 ---
 Feel free to report any issues you encounter. </br>
