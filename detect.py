@@ -1,5 +1,6 @@
 import torch
 import torchvision.transforms as transforms
+import torch.nn.functional as F
 import numpy as np
 from PIL import Image
 import cv2
@@ -107,8 +108,8 @@ while cap.isOpened():
                 outputs = model(pil_img)
                 # print(outputs)
 
-                tensor_probs, predicted = torch.max(outputs, 1)
-                confidence_value = torch.softmax(tensor_probs, dim=-1).item() 
+                _, predicted = torch.max(outputs, 1)
+                confidence_value = F.softmax(outputs, dim=1).max().item()
                 predicted_class = predicted.item()
 
                 # Execute the corresponding action

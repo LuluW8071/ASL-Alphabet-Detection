@@ -44,19 +44,19 @@ To run the demo:
     ```bash
     pip install -r requirements.txt
     ```
-- **Run `main.py` for Demo**:
-    - To run demo in streamlit:
+- **Run Demo**:
+    - Run `main.py` for image classification using streamlit demo:
         ```bash
         cd demo
         streamlit run main.py
         ```
 
-    - To run demo in opencv/mediapipe:
+    - Run `detect.py` for live detection using opencv/mediapipe demo:
         ```bash
         python3 detect.py
         ```
 
-    >Note: logs are created on the file named `action_handler.log`
+    >Note: If you have no webcame you can use application named droidcam instead to turn mobile phone as webcam and logs are created on the file named `action_handler.log`.
 
 <i>This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `model/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.</i>
 
