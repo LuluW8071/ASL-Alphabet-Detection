@@ -56,7 +56,7 @@ To run the demo:
         python3 detect.py
         ```
 
-    >Note: If you have no webcame you can use application named droidcam instead to turn mobile phone as webcam and logs are created on the file named `action_handler.log`.
+    >Note: If you have no webcam you can use application named droidcam instead to turn mobile phone as webcam and logs are created on the file named `action_handler.log`.
 
 <i>This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `model/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.</i>
 
