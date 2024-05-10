@@ -5,29 +5,13 @@ from PIL import Image
 import cv2
 import mediapipe as mp
 from actions import ActionHandler
-import sys 
 
+import sys 
 sys.path.append('../')
 from neuralnet import model as nn_model
 
+# Setting device agnostic code
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-def predict_image(model, image_tensor, class_names):
-    """
-    Predict the class label for the given image tensor using the provided model.
-    """
-    with torch.inference_mode():
-        # Add an extra dimension to image
-        image_tensor_with_batch_size = image_tensor.unsqueeze(dim=0)
-
-        # Make a prediction on image with an extra dimension
-        image_pred = model(image_tensor_with_batch_size.to(device))
-    image_pred_probs = torch.softmax(image_pred, dim=1)
-    # Convert prediction probabilities -> prediction labels
-    image_pred_label = torch.argmax(image_pred_probs, dim=1)
-    return class_names[image_pred_label.numpy()], image_pred_probs
-
-
 
 # Load the PyTorch model
 model_path = 'model/efficientnet_model.pth'
@@ -103,48 +87,48 @@ while cap.isOpened():
             hand_landmarks_array = np.array([[data.x, data.y, data.z] for data in hand_landmarks.landmark])
             x_min, y_min, z_min = np.min(hand_landmarks_array, axis=0)
             x_max, y_max, z_max = np.max(hand_landmarks_array, axis=0)
-            padding = 0.05  # Change this value to increase/decrease the padding
+            padding = 0.05          # Change this value to increase/decrease the padding
             x_min -= padding
             y_min -= padding
             x_max += padding
             y_max += padding
-            x_min = max(0, x_min)
-            y_min = max(0, y_min)
-            x_max = min(1, x_max)
-            y_max = min(1, y_max)
+            x_min, y_min, x_max, y_max = max(0, x_min), max(0, y_min), min(1, x_max), min(1, y_max)
             bbox = [int(x_min * frame.shape[1]), int(y_min * frame.shape[0]), int(x_max * frame.shape[1]), int(y_max * frame.shape[0])]
 
             # Extract the hand image
             hand_img = frame[bbox[1]:bbox[3], bbox[0]:bbox[2]]
 
-            # Preprocess the hand image
+            # Preprocess hand image to tensors
             pil_img = Image.fromarray(hand_img)
             pil_img = transform(pil_img).unsqueeze(0)
 
-            # Use the model to predict the class
-            with torch.no_grad():
+            # Inferencing to predict the class
+            with torch.inference_mode():
                 outputs = model(pil_img)
-                _, predicted = torch.max(outputs, 1)
+                # print(outputs)
+
+                tensor_probs, predicted = torch.max(outputs, 1)
+                confidence_value = torch.softmax(tensor_probs, dim=-1).item() 
                 predicted_class = predicted.item()
 
                 # Execute the corresponding action
                 action = class_labels[predicted_class]
-                handler = ActionHandler(action)
+                handler = ActionHandler(confidence_value, action)
                 handler.execute_action()
-
-                # Print the predicted class
-                print('The predicted class is:', action)
 
     # Draw the bounding box
     if bbox is not None:
-        cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 0), 3)
+        cv2.rectangle(frame, (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 3)
 
     # Display the class name above the bounding box
     if predicted_class is not None:
-        cv2.putText(frame, class_labels[predicted_class],(bbox[0], bbox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,0), thickness=2,lineType=cv2.LINE_AA)
+        text = f"{action}: {confidence_value:.2f}"
+        (text_width, text_height), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2)
+        cv2.rectangle(frame, (bbox[0], bbox[1] - text_height - 20), (bbox[0] + text_width + 20, bbox[1]), (255, 255, 255), -1)
+        cv2.putText(frame, text, (bbox[0], bbox[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0,0,255), thickness=2,lineType=cv2.LINE_AA)
 
     # Display the resulting frame
-    cv2.imshow('GBHCI', frame)
+    cv2.imshow('ASL Detection', frame)
     if cv2.waitKey(1) & 0xFF == 27:
         break
 
