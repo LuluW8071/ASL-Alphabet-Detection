@@ -46,15 +46,15 @@ To run the demo:
     ```
 - **Run `main.py` for Demo**:
     - To run demo in streamlit:
-    ```bash
-    cd demo
-    streamlit run main.py
-    ```
+        ```bash
+        cd demo
+        streamlit run main.py
+        ```
 
-    -To run demo in streamlit:
-    ```bash
-    python3 detect.py
-    ```
+    - To run demo in opencv/mediapipe:
+        ```bash
+        python3 detect.py
+        ```
 
     >Note: logs are created on the file named `action_handler.log`
 
