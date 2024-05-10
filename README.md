@@ -37,16 +37,26 @@ If you wish to train the model on your local device, please ensure that
 To run the demo:
 
 - **Install Dependencies**:
+    ```bash
+    pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+    ```
 
     ```bash
     pip install -r requirements.txt
     ```
 - **Run `main.py` for Demo**:
-
+    - To run demo in streamlit:
     ```bash
     cd demo
     streamlit run main.py
     ```
+
+    -To run demo in streamlit:
+    ```bash
+    python3 detect.py
+    ```
+
+    >Note: logs are created on the file named `action_handler.log`
 
 <i>This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `model/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.</i>
 
