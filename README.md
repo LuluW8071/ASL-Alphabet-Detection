@@ -1,65 +1,66 @@
-# American Sign Language Image Classification using EfficientNetB0
+# American Sign Language Detection using EfficientNetB0
 
-To utilize the Kaggle API, ensure you have a Kaggle account and a Kaggle API token saved as a JSON file named `kaggle.json`. Run the script with the `--json_path` argument pointing to the location of your `kaggle.json` file for authentication. For a step-by-step tutorial on obtaining your Kaggle API token, click [here](https://christianjmills.com/posts/kaggle-obtain-api-key-tutorial/).
+This project utilizes the **EfficientNetB0** CNN architecture for image classification + detection of American Sign Language (ASL) alphabet images.
 
-To separately download the ASL Dataset, you can click [here](https://www.kaggle.com/datasets/debashishsau/aslamerican-sign-language-aplhabet-dataset). 
+## Setup and Installation
 
-Alternatively, you can use the provided `dataset_downloader.py` script to automatically download the dataset for you. Simply run the script with the appropriate arguments, and it will handle the download and extraction process for you.
+### 1. Install Required Dependencies
 
-## Uploading Python Scripts and Kaggle API Key to Colab
-To begin, navigate to your Colab environment and ensure you have all the necessary Python scripts from the `neuralnet` directory and the `script` directory. Additionally, make sure you have your Kaggle API JSON file ready for uploading.
 
-1. **Accessing Colab Environment**: Open your Colab notebook and ensure you are connected to the runtime.
+```bash
+pip install -r requirements.txt
+pip install kaggle
+```
 
-2. **Upload Python Scripts**: Click on the "Files" icon on the left sidebar and select "Upload". Navigate to the directories containing your Python scripts (`neuralnet` and `script`), select all relevant files, and upload them to your Colab environment.
+### 2. Download the ASL Alphabet Dataset
 
-3. **Upload Kaggle API JSON File**: Follow the same process to upload your Kaggle API JSON file. This file is named `kaggle.json` and contains your Kaggle API token for authentication.
+To download the dataset directly from Kaggle, ensure that your `kaggle.json` API key is properly set up. Follow these steps:
 
-Once all files are uploaded, you can proceed to execute your Python scripts within the Colab environment, utilizing the uploaded scripts and the Kaggle API token for accessing datasets. 
+1. Move your `kaggle.json` file to the directory:
+    - On Windows: `C:/Users/{your_username}/.kaggle/`
+    - On macOS/Linux: `~/.kaggle/`
 
-## Train Model
-All the required **python commands** to run the scripts are in notebook `ASL_Alphabet_Classification.ipynb`.
-
-### Note
-- It may take around 1 hour to train.
-- After training is completed, download model file named `efficientnet_model.pth` under `models` directory.
-
-## Training the Model Locally
-
-If you wish to train the model on your local device, please ensure that 
-- You have at least **8GB** of **VRAM** on a CUDA-supported GPU device. 
-- Kaggle API token (`kaggle.json`) is moved to the directory `"C:/Users/{your_username}/.kaggle/"` on Windows, or `"~/.kaggle/"` on Linux or macOS. 
-- To provide the absolute path of the new `kaggle.json` location when running the script with the `--json_path` argument for `dataset_downloader.py
-- `Pytorch Cuda` version is installed with appropriate version of `Nvidia CUDA Toolkit`.
-
-## Demo Usage
-
-To run the demo:
-
-- **Install Dependencies**:
+2. Run the following command to download the dataset:
     ```bash
-    pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+    kaggle datasets download -d debashishsau/aslamerican-sign-language-aplhabet-dataset
     ```
 
+3. Unzip the dataset:
     ```bash
-    pip install -r requirements.txt
+    unzip aslamerican-sign-language-aplhabet-dataset.zip
     ```
-- **Run Demo**:
-    - Run `main.py` for image classification using streamlit demo:
-        ```bash
-        cd demo
-        streamlit run main.py
-        ```
 
-    - Run `detect.py` for live detection using opencv/mediapipe demo:
-        ```bash
-        python3 detect.py
-        ```
+### 3. Train the Model
 
-    >Note: If you have no webcam you can use application named droidcam instead to turn mobile phone as webcam and logs are created on the file named `action_handler.log`.
+You can train the model locally using the dataset:
 
-<i>This project utilizes the `EfficientNetB0` CNN architecture model for image classification. The pre-trained model is available in the `model/` directory. You can load the model file `efficientnet_model.pth` on Colab or a local device to perform inference on American Sign Language images.</i>
+- Ensure you have at least **8GB of VRAM** on a CUDA-supported GPU.
+- Open the `ASL_Alphabet_Classification.ipynb` notebook and follow the instructions for training.
+
+> [!Note]
+> Training may take around 1 hour to complete. After training, the model file `efficientnet_model.pth` will be saved under the `models/` directory.
+
+### 4. Running the Demo
+
+#### Streamlit Demo (Image Classification):
+```bash
+cd demo
+streamlit run main.py
+```
+
+#### Live Detection Demo:
+```bash
+python3 detect.py
+```
+
+> [!Note]
+> If you don't have a webcam, you can use the DroidCam app to turn your mobile phone into a webcam. Logs will be saved in the `action_handler.log` file.
+
+### 5. Pre-trained Model
+
+You can use the pre-trained model `efficientnet_model.pth` located in the `models/` directory to perform inference on ASL images in your local environment or in Google Colab.
 
 ---
-Feel free to report any issues you encounter. </br>
-<img src="https://user-images.githubusercontent.com/74038190/213844263-a8897a51-32f4-4b3b-b5c2-e1528b89f6f3.png" width="25px" /> Don't forget to star the repo :)
+
+Feel free to report any issues you encounter.  
+Don't forget to ⭐ the repo!
