@@ -1,18 +1,29 @@
+import comet_ml
 import os 
 import torch 
 import dataset, engine, model
 import utils
-from torchinfo import summary
 from torchvision import transforms
+from comet_ml import Experiment
+
+# Load API
+from dotenv import load_dotenv
+load_dotenv()
+
+# Initialize Comet ML Experiment
+comet_ml.login(api_key=os.getenv('COMET_API_KEY'),
+                project_name="American Sign Langauge")
+
+experiment = comet_ml.Experiment()
 
 # Setup Hyperparameters
-BATCH_SIZE = 192
-NUM_WORKERS = os.cpu_count()
+BATCH_SIZE = 128
+NUM_WORKERS = 2
 NUM_EPOCHS = 10
-LEARNING_RATE = 0.001
+LEARNING_RATE = 4e-5
 
 # Setup directories
-source_dir = "dataset/ASL_Alphabet_Dataset/asl_alphabet_train"
+source_dir = "asl_samples"
 
 # Setup device agnostic code
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -32,13 +43,8 @@ train_dataloader, test_dataloader, class_names = dataset.create_dataloaders(
 )
 
 # Initalize EfficientNetB0 model
-model = model.EfficientNetB0(num_classes=29).to(device)
-
-summary(model=model,
-        input_size=(BATCH_SIZE, 3, 128, 128),
-        col_names=["input_size", "output_size", "num_params", "trainable"],
-        col_width=20,
-        row_settings=["var_names"])
+model = model.EfficientNetB0(num_classes=36).to(device)
+model = torch.compile(model)
 
 
 # Setup loss_fn and optimizer
@@ -50,12 +56,16 @@ optimizer = torch.optim.Adam(model.parameters(),
 engine.train(model=model,
              train_dataloader=train_dataloader,
              test_dataloader=test_dataloader,
+             classes=class_names,
              loss_fn=loss_fn,
              optimizer=optimizer,
              epochs=NUM_EPOCHS,
-             device=device)
+             device=device,
+             experiment=experiment)
+
+experiment.end()
 
 # Save the model through utils.py 
 utils.save_model(model=model,
                  target_dir="models",
-                 model_name="efficientnet_model.pth")
+                 model_name=f"efficientnet_model.pth")
