@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 import cv2
 import mediapipe as mp
+import json
 from actions import ActionHandler
 
 import sys 
@@ -15,9 +16,9 @@ from neuralnet import model as nn_model
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Load the PyTorch model
-model_path = 'model/efficientnet_model.pth'
+model_path = 'assets/best_model.pth'
 model_info = torch.load(model_path, map_location=torch.device('cpu'))
-model = nn_model.EfficientNetB0(num_classes=29).to(device)
+model = nn_model.EfficientNetB0(num_classes=36).to(device)
 model.load_state_dict(model_info)
 model.eval()
 
@@ -26,38 +27,9 @@ mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=False, max_num_hands=2, min_detection_confidence=0.5)
 
-# Define class labels
-class_labels = {
-    0: 'A',
-    1: 'B',
-    2: 'C',
-    3: 'D',
-    4: 'E',
-    5: 'F',
-    6: 'G',
-    7: 'H',
-    8: 'I',
-    9: 'J',
-    10: 'K',
-    11: 'L',
-    12: 'M',
-    13: 'N',
-    14: 'O',
-    15: 'P',
-    16: 'Q',
-    17: 'R',
-    18: 'S',
-    19: 'T',
-    20: 'U',
-    21: 'V',
-    22: 'W',
-    23: 'X',
-    24: 'Y',
-    25: 'Z',
-    26: 'del',
-    27: 'nothing',
-    28: 'space'
-}
+# Load class labels from the JSON file
+with open('assets/class_labels.json', 'r') as f:
+    class_labels = json.load(f)
 
 # Define transforms for preprocessing the hand image
 transform = transforms.Compose([
@@ -88,7 +60,7 @@ while cap.isOpened():
             hand_landmarks_array = np.array([[data.x, data.y, data.z] for data in hand_landmarks.landmark])
             x_min, y_min, z_min = np.min(hand_landmarks_array, axis=0)
             x_max, y_max, z_max = np.max(hand_landmarks_array, axis=0)
-            padding = 0.05          # Change this value to increase/decrease the padding
+            padding = 0.05  # Change this value to increase/decrease the padding
             x_min -= padding
             y_min -= padding
             x_max += padding
@@ -106,14 +78,13 @@ while cap.isOpened():
             # Inferencing to predict the class
             with torch.inference_mode():
                 outputs = model(pil_img)
-                # print(outputs)
 
                 _, predicted = torch.max(outputs, 1)
                 confidence_value = F.softmax(outputs, dim=1).max().item()
                 predicted_class = predicted.item()
 
                 # Execute the corresponding action
-                action = class_labels[predicted_class]
+                action = class_labels[str(predicted_class)]  # Convert predicted class to string
                 handler = ActionHandler(confidence_value, action)
                 handler.execute_action()
 
