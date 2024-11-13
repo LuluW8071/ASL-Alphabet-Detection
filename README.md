@@ -1,65 +1,74 @@
 # American Sign Language Detection using EfficientNetB0
 
-This project utilizes the **EfficientNetB0** CNN architecture for image classification + detection of American Sign Language (ASL) alphabet images.
+This project uses the **EfficientNetB0** CNN architecture for image classification of the American Sign Language (ASL) alphabet and 0-9 digits, with real-time detection support.
 
-## Setup and Installation
+## Usage
 
-### 1. Install Required Dependencies
+### 1. Install Dependencies
 
+Install all required libraries from the `requirements.txt` file:
 
 ```bash
 pip install -r requirements.txt
-pip install kaggle
 ```
 
-### 2. Download the ASL Alphabet Dataset
+### 2. Download Dataset
 
-To download the dataset directly from Kaggle, ensure that your `kaggle.json` API key is properly set up. Follow these steps:
+Download and extract the ASL dataset using the following command:
 
-1. Move your `kaggle.json` file to the directory:
-    - On Windows: `C:/Users/{your_username}/.kaggle/`
-    - On macOS/Linux: `~/.kaggle/`
+```bash
+gdown https://drive.google.com/uc\?id\=1b0-MLad_AcVvbocCk7RUB2XH5Xbr7L3x
+```
 
-2. Run the following command to download the dataset:
-    ```bash
-    kaggle datasets download -d debashishsau/aslamerican-sign-language-aplhabet-dataset
-    ```
-
-3. Unzip the dataset:
-    ```bash
-    unzip aslamerican-sign-language-aplhabet-dataset.zip
-    ```
+```bash
+sudo apt install rar
+unrar asl.rar
+```
 
 ### 3. Train the Model
 
-You can train the model locally using the dataset:
+Before training, set up the `COMET_API_KEY` in a `.env` file inside the `neuralnet` directory to log metrics.
 
-- Ensure you have at least **8GB of VRAM** on a CUDA-supported GPU.
-- Open the `ASL_Alphabet_Classification.ipynb` notebook and follow the instructions for training.
+To train the model, run:
 
-> [!Note]
-> Training may take around 1 hour to complete. After training, the model file `efficientnet_model.pth` will be saved under the `models/` directory.
-
-### 4. Running the Demo
-
-#### Streamlit Demo (Image Classification):
 ```bash
-cd demo
-streamlit run main.py
+python3 ASL-Alphabet-Detection/neuralnet/train.py
 ```
 
-#### Live Detection Demo:
+> Hyperparameter configurations are available in `train.py`.
+
+### 4. Run the Demo
+
+To run the real-time detection demo:
+
 ```bash
 python3 detect.py
 ```
 
-> [!Note]
-> If you don't have a webcam, you can use the DroidCam app to turn your mobile phone into a webcam. Logs will be saved in the `action_handler.log` file.
+> **Note**: If you don't have a webcam, you can use the DroidCam app to turn your mobile phone into a webcam. Logs will be saved in the `action_handler.log` file.
 
 ### 5. Pre-trained Model
 
-You can use the pre-trained model `efficientnet_model.pth` located in the `models/` directory to perform inference on ASL images in your local environment or in Google Colab.
+You can use the pre-trained model `best_model.pth` located in the `assets/` directory to perform inference.
 
+## Experiment Results
+
+| Loss Curves | Accuracy Curves |
+|-------------|-----------------|
+| ![Loss](assets/train_loss,test_loss%20VS%20step.jpeg) | ![Accuracy](assets/train_accuracy,test_accuracy%20VS%20step.jpeg) |
+
+> The best model was selected based on the highest test accuracy and was trained for 25 epochs, with the best results at epoch 22.
+
+| Train Loss | Test Loss | Train Accuracy | Test Accuracy |
+|------------|-----------|----------------|---------------|
+| 0.052      | 0.028     | 0.984          | 0.990         |
+
+> [!NOTE]
+> Since the number of class labels was large and the test set was randomly sampled, not all labels were included in the evaluation. As a result, some labels may be missing from the confusion matrix.
+
+|Confusion Matrix|
+|-|
+|![alt text](assets/confusion_matrix.png)|
 ---
 
 Feel free to report any issues you encounter.  
