@@ -17,13 +17,13 @@ comet_ml.login(api_key=os.getenv('COMET_API_KEY'),
 experiment = comet_ml.Experiment()
 
 # Setup Hyperparameters
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 NUM_WORKERS = 2
-NUM_EPOCHS = 10
+NUM_EPOCHS = 25
 LEARNING_RATE = 4e-5
 
 # Setup directories
-source_dir = "asl_samples"
+source_dir = "asl"
 
 # Setup device agnostic code
 device = 'cuda' if torch.cuda.is_available() else 'cpu'

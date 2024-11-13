@@ -8,7 +8,7 @@ from torchmetrics import Accuracy
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torchmetrics_accuracy = Accuracy(task = "multiclass", num_classes = 36).to(device)
 
-def train_step(model, dataloader, loss_fn, optimizer, device, experiment):
+def train_step(model, dataloader, loss_fn, optimizer, device, experiment, epoch):
     """
     Perform a single training step.
 
@@ -56,7 +56,7 @@ def train_step(model, dataloader, loss_fn, optimizer, device, experiment):
     }
 
     # Log metrics dictionary to Comet ML
-    experiment.log_metrics(metrics_dict)
+    experiment.log_metrics(metrics_dict, step=epoch)
 
     train_losses.append(train_loss.item())
     train_accuracies.append(train_acc.item())
@@ -64,7 +64,7 @@ def train_step(model, dataloader, loss_fn, optimizer, device, experiment):
     return train_losses, train_accuracies
 
 
-def test_step(model, dataloader, loss_fn, device, experiment):
+def test_step(model, dataloader, loss_fn, device, experiment, epoch):
     """
     Perform a single testing step.
 
@@ -115,7 +115,7 @@ def test_step(model, dataloader, loss_fn, device, experiment):
         }
 
         # Log metrics dictionary to Comet ML
-        experiment.log_metrics(metrics_dict)
+        experiment.log_metrics(metrics_dict, step=epoch)
 
         test_losses.append(test_loss.item())
         test_accuracies.append(test_acc.item())
@@ -158,12 +158,14 @@ def train(model, train_dataloader, test_dataloader, classes,
                                            loss_fn,
                                            optimizer,
                                            device,
-                                           experiment)
+                                           experiment,
+                                           epoch)
         test_losses, test_accuracies, preds_list, labels_list = test_step(model,
                                         test_dataloader,
                                         loss_fn,
                                         device,
-                                        experiment)
+                                        experiment,
+                                        epoch)
 
          # Calculate avg. loss and accuracy
         avg_train_loss = sum(train_losses) / len(train_losses)
